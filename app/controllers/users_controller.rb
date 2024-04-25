@@ -1,23 +1,22 @@
 class UsersController < ApplicationController
-    def sign_up
-        byebug
+    def signup
       @user = User.new(user_params)
       if @user.save
         render json: @user
       else
-        render json: { error: "Unable to process request" }, status: :unprocessable_entity
+        render json: {error:  @user.errors.full_messages }, status: :unprocessable_entity
       end
     end
     
-    # def login
-    #   user = User.find_by(email: params[:user][:email])
-    #   if user.password == params[:user]['password']
-    #     token = encode_data({ user_data: user.id })
-    #     render json: {user: user, token: token}
-    #   else
-    #     render json(message: "invalid credentials")
-    #   end
-    # end
+    def login
+      user = User.find_by(username: params[:user][:username])
+      if user.password == params[:user]['password']
+        token = encode_data({ user_data: user.id })
+        render json: {user: user, token: token}
+      else
+        render json(message: "invalid credentials")
+      end
+    end
     
     # def forgot_password
     #   email_param = params[:email]
@@ -48,9 +47,10 @@ class UsersController < ApplicationController
 
   
     private
-  
+
     def user_params
       params.require(:user).permit(:username, :email, :password, :confirm_password)
     end
+
   end  
   

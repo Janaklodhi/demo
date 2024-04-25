@@ -7,8 +7,8 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  post '/users/sign_up', to: 'users#sign_up'
-  # post '/users/login', to: 'users#login'
+  post '/users/signup', to: 'users#signup'
+  post '/users/login', to: 'users#login'
   # post 'users/forgot_password', to: 'users#forgot_password'
   # patch 'users/reset_password', to: 'users#reset_password'
   # get '/reset_password/:token', to: 'users#reset_password', as: 'reset_password'

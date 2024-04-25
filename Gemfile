@@ -54,6 +54,8 @@ group :development do
   gem "web-console"
   gem 'jwt'
   gem 'dotenv-rails'
+  gem 'rack-cors'
+  gem 'byebug'
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler"
 
@@ -65,5 +67,4 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
-  gem 'byebug'
 end
