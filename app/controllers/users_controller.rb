@@ -11,13 +11,17 @@ class UsersController < ApplicationController
     def login
       user = user_params
       @user = User.find_by(username: user[:username])
-      if @user && @user.authenticate(user[:password])
-        token = encode_data({ user_data: @user.id })
-        render json: { user: @user, token: token }
-      else
-        render json: { message: "Invalid credentials" }, status: :unauthorized
+      begin
+        if @user.password == user[:password]
+          token = encode_data({ user_data: @user.id })
+          render json: { user: user, token: token }
+        else
+          render json: { message: "Invalid credentials" }, status: :unauthorized
+        end
+      rescue => e
+        render json: { message: "An error occurred: #{e.message}" }, status: :unprocessable_entity
       end
-    end    
+    end
 
     def forgot_password
       email_param = params[:email]
