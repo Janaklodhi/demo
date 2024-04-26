@@ -8,15 +8,30 @@ class UsersController < ApplicationController
       end
     end
     
+    # def login
+    #   byebug
+    #   user = params[:user][:username]
+    #   user = User.find_by(username: user.username)
+    #   if user.password == params[:user]['password']
+    #     token = encode_data({ user_data: user.id })
+    #     render json: {user: user, token: token}
+    #   else
+    #     render json(message: "invalid credentials")
+    #   end
+    # end
+
     def login
-      user = User.find_by(username: params[:user][:username])
-      if user.password == params[:user]['password']
-        token = encode_data({ user_data: user.id })
-        render json: {user: user, token: token}
+      user = user_params
+      @user = User.find_by(username: user[:username])
+      if @user.password == user[:password]
+        token = encode_data({ user_data: @user.id })
+        render json: { user: user, token: token }
       else
-        render json(message: "invalid credentials")
+        render json: { message: "Invalid credentials" }, status: :unauthorized
       end
     end
+    
+  
     
     # def forgot_password
     #   email_param = params[:email]
@@ -49,7 +64,7 @@ class UsersController < ApplicationController
     private
 
     def user_params
-      params.require(:user).permit(:username, :email, :password, :confirm_password)
+      params.require(:users).permit(:username, :email, :password, :confirm_password)
     end
 
   end  

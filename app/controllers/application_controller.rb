@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
     
-    SECRET = ENV['SECRET_KEY'] # Rails.application.secret_key_base this#
+    SECRET = ENV['SECRET_KEY'] || Rails.application.secret_key_base
     def encode_data(payload)
         token = JWT.encode payload, SECRET, "HS256"
         return token
