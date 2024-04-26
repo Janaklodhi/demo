@@ -6,7 +6,7 @@ class ApplicationController < ActionController::API
         return token
     end
     
-    def decode_data(token)  
+    def decode_data(token)
         begin
             data = JWT.decode token, SECRET, true, { algorithm: "HS256" }
             return data
