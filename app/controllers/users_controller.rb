@@ -12,7 +12,7 @@ class UsersController < ApplicationController
       user = user_params
       @user = User.find_by(username: user[:username])
       begin
-        if @user.password == user[:password]
+        if @user&.password == user[:password]
           token = encode_data({ user_data: @user.id })
           render json: { user: user, token: token }
         else
