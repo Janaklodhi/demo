@@ -36,24 +36,37 @@ class UsersController < ApplicationController
     end
   
     def reset_password
-      password_reset = User.find_by(token: params[:token])
-      if password_reset && !password_reset.expired?
-        user = password_reset.user
-        if user.update(password: params[:password], password_confirmation: params[:password_confirmation])
-          password_reset.destroy
-          render json: { message: "Password successfully updated" }
+      token = params[:token]
+      user = User.find_by(reset_password_token: token)
+      if user && !expired?(token)
+        if params[:password].present? && params[:password_confirmation].present?
+          if params[:password] == params[:password_confirmation]
+            if user.update(password: params[:password])
+              user.update(reset_password_token: nil)
+              render json: { message: "Password successfully updated" }
+            else
+              render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+            end
+          else
+            render json: { error: "Password and confirmation do not match" }, status: :unprocessable_entity
+          end
         else
-          render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+          render json: { error: "New password and confirmation are required" }, status: :unprocessable_entity
         end
       else
         render json: { error: "Invalid or expired token" }, status: :unprocessable_entity
       end
     end
-
-  
+    
     private
 
     def user_params
       params.require(:user).permit(:username, :email, :password, :confirm_password)
     end
-  end  
+
+    def expired?(token)
+      user = User.find_by(reset_password_token: token)
+      return false unless user
+      user.reset_password_sent_at < 24.hours.ago
+    end
+end  

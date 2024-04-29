@@ -9,7 +9,6 @@ Rails.application.routes.draw do
   # root "posts#index"
   post '/users/signup', to: 'users#signup'
   post '/users/login', to: 'users#login'
-  # post 'users/forgot_password', to: 'users#forgot_password'
-  # patch 'users/reset_password', to: 'users#reset_password'
-  # get '/reset_password/:token', to: 'users#reset_password', as: 'reset_password'
+  post '/users/forgot_password', to: 'users#forgot_password'
+  patch '/users/reset_password/:token', to: 'users#reset_password', as: 'reset_password_token'
 end
