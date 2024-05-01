@@ -87,9 +87,20 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
   config.active_record.sqlite3_production_warning = false
-  config.action_mailer.default_url_options = { host: 'example.com', protocol: 'https' }
-
-
+  config.action_mailer.default_url_options = { host: 'https://demo-xq16.onrender.com', protocol: 'https' }
+  # Use Rails credentials to store sensitive information
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address: 'smtp.gmail.com',
+    port: 587,
+    domain: 'gmail.com',             
+    user_name: 'janakthakur346@gmail.com', 
+    password: 'ktib hmnt eief wdjq',         
+    authentication: 'plain',
+    enable_starttls_auto: true
+  }
+  config.action_mailer.raise_delivery_errors = true
+  # Raise delivery errors if emails cannot be sent
   # Enable DNS rebinding protection and other `Host` header attacks.
   # config.hosts = [
   #   "example.com",     # Allow requests from example.com
