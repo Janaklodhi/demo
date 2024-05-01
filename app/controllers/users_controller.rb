@@ -11,15 +11,21 @@ class UsersController < ApplicationController
   def login
     user = user_params
     @user = User.find_by(username: user[:username])
-    begin
-      if @user&.password == user[:password]
-        token = encode_data({ user_data: @user.id })
-        render_success({ user: user, token: token })
-      else
-        render_error("Invalid credentials")
+    if @user.nil?
+      render_error("Username not found")
+    elsif user[:password].blank?
+      render_error("Password can't be blank")
+    else
+      begin
+        if @user.password == user[:password]
+          token = encode_data({ user_data: @user.id })
+          render_success({ user: user, token: token })
+        else
+          render_error("Invalid credentials")
+        end
+      rescue => e
+        render_error("An error occurred: #{e.message}")
       end
-    rescue => e
-      render_error("An error occurred: #{e.message}")
     end
   end
 
