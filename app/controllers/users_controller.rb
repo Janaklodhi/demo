@@ -1,28 +1,30 @@
 class UsersController < ApplicationController
   def signup
-    @user = User.new(user_params)
-    if @user.save
-      render_success(@user)
-    else
-      render_error(@user.errors.full_messages.join(', '))
+    begin
+      @user = User.new(user_params)
+      if @user.save
+        render_success(@user)
+      else
+        render_error(@user.errors.full_messages.join(', '))
+      end
+    rescue ArgumentError => e
+      render_error(e.message)
     end
   end
-  
+
   def login
     user = user_params
     @user = User.find_by(username: user[:username])
     if @user.nil?
-      render_error("Username not found")
+      render_error("User not found")
     elsif user[:password].blank?
       render_error("Password can't be blank")
+    elsif @user.password != user[:password]
+      render_error("Incorrect password")
     else
       begin
-        if @user.password == user[:password]
-          token = encode_data({ user_data: @user.id })
-          render_success({ user: user, token: token })
-        else
-          render_error("Invalid credentials")
-        end
+        token = encode_data({ user_data: @user.id })
+        render_success({ user: user, token: token })
       rescue => e
         render_error("An error occurred: #{e.message}")
       end
@@ -66,7 +68,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:username, :email, :password, :confirm_password)
+    params.require(:user).permit(:username, :email, :password, :confirm_password, :account_type)
   end
 
   def expired?(token)
@@ -75,11 +77,15 @@ class UsersController < ApplicationController
     user.reset_password_sent_at < 24.hours.ago
   end
 
-  def render_success(data)
-    render json: {data: data}
+  def render_success(user)
+    render json: {user: user}
+    # render json: user, serializer: UserSerializer
+
   end
 
   def render_error(message, status = :unprocessable_entity)
     render json: { error: message }, status: status
   end
 end
+
+

@@ -4,9 +4,9 @@ class User < ApplicationRecord
     validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
     validates :password, presence: true, length: { minimum: 6 }
     validates :confirm_password, presence: true
+    enum account_type: { student: 'student', teacher: 'teacher', admin: 'admin' }, _default: 'student'
+    validate :valid_account_type
     # validate :password_confirmation_match
-
-
     def generate_password_token!
       self.reset_password_token = generate_token
       self.reset_password_sent_at = Time.now.utc
@@ -14,6 +14,13 @@ class User < ApplicationRecord
     end
 
     private
+
+    def valid_account_type
+      unless %w(student teacher admin).include?(account_type)
+        errors.add(:account_type, "this is not a valid account type")
+      end
+    end
+
     
     # def password_confirmation_match
     #   byebug

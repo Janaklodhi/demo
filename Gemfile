@@ -58,6 +58,7 @@ group :development do
   gem "web-console"
   gem 'dotenv-rails'
   gem 'byebug'
+  gem 'active_model_serializers'
   # Add speed badges [https://github.com/MiniProfiler/rack-mini-profiler]
   # gem "rack-mini-profiler"
 
